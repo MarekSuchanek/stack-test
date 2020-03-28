@@ -3,4 +3,7 @@ module Lib
     ) where
 
 someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+someFunc = putStrLn dummyChange
+
+dummyChange = "This has been done just to change the file"
+
