@@ -32,7 +32,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.stack
-        key: stack-home-ubuntu16-${{ hashFiles('**/stack.yaml.lock') }}
+        key: stack-home-ubuntu16-${{ hashFiles('**/*') }}
         restore-keys: |
           stack-home-ubuntu16-
     
@@ -61,7 +61,7 @@ jobs:
 
     - name: Install GHC and dependencies
       run: |
-        stack build --no-terminal --install-ghc --only-dependencies
+        stack build -v --no-terminal --install-ghc --only-dependencies
         
 # (3) -> Build binary
     - name: Build and test application
