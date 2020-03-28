@@ -59,9 +59,14 @@ jobs:
           curl -L https://github.com/commercialhaskell/stack/releases/download/v$STACK_VERSON/stack-$STACK_VERSON-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack';
         fi
 
-    #- name: Install GHC and dependencies
-    #  run: |
-    #    stack build -v --no-terminal --install-ghc --only-dependencies
+    - name: Update file timestamps
+      run: |
+        for FILE in $(git ls-files)
+        do
+            TIME=$(git log --pretty=format:%cd -n 1 --date=iso $FILE)
+            TIME2=`echo $TIME | sed 's/-//g;s/ //;s/://;s/:/\./;s/ .*//'`
+            touch -m -t $TIME2 $FILE
+        done
         
 # (3) -> Build binary
     - name: Build and test application
