@@ -59,9 +59,9 @@ jobs:
           curl -L https://github.com/commercialhaskell/stack/releases/download/v$STACK_VERSON/stack-$STACK_VERSON-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack';
         fi
 
-    - name: Install GHC and dependencies
-      run: |
-        stack build -v --no-terminal --install-ghc --only-dependencies
+    #- name: Install GHC and dependencies
+    #  run: |
+    #    stack build -v --no-terminal --install-ghc --only-dependencies
         
 # (3) -> Build binary
     - name: Build and test application
