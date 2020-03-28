@@ -3,4 +3,4 @@ module Lib
     ) where
 
 someFunc :: IO ()
-someFunc = putStrLn "someFunc nope xxx"
+someFunc = putStrLn "someFunc nope xxxx"
