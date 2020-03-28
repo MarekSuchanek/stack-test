@@ -14,8 +14,6 @@ jobs:
         stack: [2.1.3]
     
     env:
-      TAG_DEVELOP: develop
-      TAG_LATEST: latest
       STACK_VERSON: ${{ matrix.stack }}
 
     steps:
@@ -32,45 +30,42 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.stack
-        key: stack-home-ubuntu16-${{ hashFiles('**/stack.yaml.lock') }}
+        key: stack-home-ubuntu16-test001-${{ hashFiles('**/stack.yaml.lock') }}
         restore-keys: |
-          stack-home-ubuntu16-
+          stack-home-ubuntu16-test001-
     
     - name: Cache .stack-work
       id: cache-stack-work
       uses: actions/cache@v1
       with:
         path: .stack-work
-        key: xstack-work-ubuntu16-${{ hashFiles('**/*.hs') }}
+        key: stack-work-ubuntu16-test001-${{ hashFiles('**/*.hs') }}
         restore-keys: |
-          xstack-work-ubuntu16-${{ hashFiles('**/*.hs') }}
-          xstack-work-ubuntu16-
+          stack-work-ubuntu16-test001-${{ hashFiles('**/*.hs') }}
+          stack-work-ubuntu16-test001-
     
     - name: Cache Stack in ~/.local/bin
       id: cache-stack-local-bin
       uses: actions/cache@v1
       with:
         path: ~/.local/bin
-        key: stack-local-bin-ubuntu16-${{ matrix.stack }}
+        key: stack-local-bin-ubuntu16-test001-${{ matrix.stack }}
 
 # (2) -> Prepare and install dependencies     
     - name: Setup stack
+      if: steps.cache-stack-local-bin.outputs.cache-hit != 'true'
       run: |
-        if [ ! -f ~/.local/bin/stack ]; then
-          curl -L https://github.com/commercialhaskell/stack/releases/download/v$STACK_VERSON/stack-$STACK_VERSON-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack';
-        fi
+        curl -L https://github.com/commercialhaskell/stack/releases/download/v$STACK_VERSON/stack-$STACK_VERSON-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack';
         
 # (3) -> Build binary
-    - name: Debug PRE
+    - name: List recursively . (before build)
       run: |
-        if [  -d .stack-work ]; then
-          ls -la -R .stack-work
-        fi
+        ls -la -R .
 
-    - name: Build and test application
+    - name: Build application
       run: |
         stack build -v --no-terminal --skip-ghc-check
         
-    - name: Debug POST
+    - name: List recursively . (after build)
       run: |
-        ls -la -R .stack-work
+        ls -la -R .
