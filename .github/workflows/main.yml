@@ -32,7 +32,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.stack
-        key: stack-home-ubuntu16-${{ hashFiles('**/*') }}
+        key: stack-home-ubuntu16-${{ hashFiles('**/stack.yaml.lock') }}
         restore-keys: |
           stack-home-ubuntu16-
     
@@ -52,21 +52,15 @@ jobs:
         path: ~/.local/bin
         key: stack-local-bin-ubuntu16-${{ matrix.stack }}
         
+    - name: Debug
+      run: |
+        ls -la -R .stack-work
 # (2) -> Prepare and install dependencies     
     - name: Setup stack
       run: |
         if [ ! -f ~/.local/bin/stack ]; then
           curl -L https://github.com/commercialhaskell/stack/releases/download/v$STACK_VERSON/stack-$STACK_VERSON-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack';
         fi
-
-    - name: Update file timestamps
-      run: |
-        for FILE in $(git ls-files)
-        do
-            TIME=$(git log --pretty=format:%cd -n 1 --date=iso $FILE)
-            TIME2=`echo $TIME | sed 's/-//g;s/ //;s/://;s/:/\./;s/ .*//'`
-            touch -m -t $TIME2 $FILE
-        done
         
 # (3) -> Build binary
     - name: Build and test application
