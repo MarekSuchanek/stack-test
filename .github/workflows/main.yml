@@ -41,8 +41,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: .stack-work
-        key: stack-work-ubuntu16-${{ hashFiles('**/*') }}
+        key: stack-work-ubuntu16-${{ hashFiles('**/*.hs') }}
         restore-keys: |
+          stack-work-ubuntu16-${{ hashFiles('**/*.hs') }}
           stack-work-ubuntu16-
     
     - name: Cache Stack in ~/.local/bin
@@ -52,9 +53,10 @@ jobs:
         path: ~/.local/bin
         key: stack-local-bin-ubuntu16-${{ matrix.stack }}
         
-    - name: Debug
+    - name: Debug PRE
       run: |
         ls -la -R .stack-work
+
 # (2) -> Prepare and install dependencies     
     - name: Setup stack
       run: |
@@ -66,3 +68,8 @@ jobs:
     - name: Build and test application
       run: |
         stack build -v --no-terminal --skip-ghc-check
+        
+    - name: Debug POST
+      run: |
+        ls -la -R .stack-work
+        
