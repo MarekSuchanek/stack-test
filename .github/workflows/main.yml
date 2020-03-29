@@ -39,9 +39,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: .stack-work
-        key: stack-work-ubuntu16-test001-${{ hashFiles('**/*.hs', '**/stack.yaml.lock') }}
+        key: stack-work-ubuntu16-test001-${{ hashFiles('**/*.hs') }}
         restore-keys: |
-          stack-work-ubuntu16-test001-${{ hashFiles('**/*.hs', '**/stack.yaml.lock') }}
+          stack-work-ubuntu16-test001-${{ hashFiles('**/*.hs') }}
           stack-work-ubuntu16-test001
     
     - name: Cache Stack in ~/.local/bin
