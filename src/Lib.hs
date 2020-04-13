@@ -5,5 +5,5 @@ module Lib
 someFunc :: IO ()
 someFunc = putStrLn dummyChange
 
-dummyChange = "This has been done just to change the file"
+dummyChange = "This has been done just to change the file!!!"
 
