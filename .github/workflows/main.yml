@@ -66,6 +66,7 @@ jobs:
       run: | 
         git ls-tree -r --name-only HEAD | while read filename; do
           TS="$(git log -1 --format="%ct" -- ${filename})"
+          echo $TS
           touch "${filename}" -mt "$(date --date="@$TS" "+%Y%m%d%H%M.%S")"
           echo "touch \"${filename}\" -mt \"$(date --date="@$TS" "+%Y%m%d%H%M.%S")\""
         done
