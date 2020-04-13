@@ -30,7 +30,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.stack
-        key: stack-home-ubuntu16-test001-${{ hashFiles('**/stack.yaml.lock') }}
+        key: stack-home-ubuntu16-test001-${{ hashFiles('**/*.yaml') }}
         restore-keys: |
           stack-home-ubuntu16-test001
     
@@ -39,9 +39,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: .stack-work
-        key: stack-work-ubuntu16-test001-${{ hashFiles('**/*.hs') }}
+        key: stack-work-ubuntu16-test001-${{ github.sha }}
         restore-keys: |
-          stack-work-ubuntu16-test001-${{ hashFiles('**/*.hs') }}
+          stack-work-ubuntu16-test001-${{ github.sha }}
           stack-work-ubuntu16-test001
     
     - name: Cache Stack in ~/.local/bin
@@ -51,13 +51,24 @@ jobs:
         path: ~/.local/bin
         key: stack-local-bin-ubuntu16-test001-${{ matrix.stack }}
 
-# (2) -> Prepare and install dependencies     
+# (2) -> Prepare Stack   
     - name: Setup stack
       if: steps.cache-stack-local-bin.outputs.cache-hit != 'true'
       run: |
         curl -L https://github.com/commercialhaskell/stack/releases/download/v$STACK_VERSON/stack-$STACK_VERSON-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack';
-        
+
 # (3) -> Build binary
+    - name: List recursively . (before timestamp change)
+      run: |
+        ls -la -R .
+    
+    - name: Update timestamps from git
+      run: | 
+        git ls-tree -r --name-only HEAD | while read filename; do
+          TS="$(git log -1 --format="%ct" -- ${filename})"
+          touch "${filename}" -mt "$(date --date="@$TS" "+%Y%m%d%H%M.%S")"
+        done
+        
     - name: List recursively . (before build)
       run: |
         ls -la -R .
